@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Claude Chat</string>
+    <string name="hint_message">Type a message…</string>
+    <string name="send">Send</string>
+</resources>
