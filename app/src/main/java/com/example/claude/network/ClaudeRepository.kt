@@ -1,12 +1,14 @@
 package com.example.claude.network
 
 import com.example.claude.BuildConfig
+import com.example.claude.model.ChatSettings
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class ClaudeRepository {
 
@@ -18,6 +20,9 @@ class ClaudeRepository {
         }
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
         Retrofit.Builder()
@@ -28,12 +33,14 @@ class ClaudeRepository {
             .create(ClaudeApiService::class.java)
     }
 
-    suspend fun sendMessage(history: List<ClaudeMessageRequest>): Result<String> {
+    suspend fun sendMessage(history: List<ClaudeMessageRequest>, settings: ChatSettings = ChatSettings()): Result<String> {
         return try {
             val request = ClaudeRequest(
                 model = "claude-sonnet-4-6",
-                max_tokens = 1024,
-                messages = history
+                max_tokens = settings.maxTokens,
+                messages = history,
+                system = settings.answerFormat.takeIf { it.isNotBlank() },
+                stop_sequences = settings.stopSequence.takeIf { it.isNotBlank() }?.let { listOf(it) }
             )
             val response = service.sendMessage(apiKey, request)
             val text = response.content.firstOrNull { it.type == "text" }?.text

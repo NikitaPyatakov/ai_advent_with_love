@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.claude.model.ChatSettings
 import com.example.claude.model.Message
 import com.example.claude.network.ClaudeMessageRequest
 import com.example.claude.network.ClaudeRepository
@@ -24,6 +25,13 @@ class ChatViewModel : ViewModel() {
 
     private val conversationHistory = mutableListOf<ClaudeMessageRequest>()
 
+    private val _settings = MutableLiveData(ChatSettings())
+    val settings: LiveData<ChatSettings> = _settings
+
+    fun updateSettings(settings: ChatSettings) {
+        _settings.value = settings
+    }
+
     fun sendMessage(text: String) {
         if (text.isBlank() || _isLoading.value == true) return
 
@@ -35,7 +43,7 @@ class ChatViewModel : ViewModel() {
         _error.value = null
 
         viewModelScope.launch {
-            val result = repository.sendMessage(conversationHistory.toList())
+            val result = repository.sendMessage(conversationHistory.toList(), _settings.value ?: ChatSettings())
             result.onSuccess { responseText ->
                 conversationHistory.add(ClaudeMessageRequest(role = "assistant", content = responseText))
                 addMessage(Message(responseText, isUser = false))
@@ -50,6 +58,11 @@ class ChatViewModel : ViewModel() {
         val current = _messages.value.orEmpty().toMutableList()
         current.add(message)
         _messages.value = current
+    }
+
+    fun clearChat() {
+        conversationHistory.clear()
+        _messages.value = emptyList()
     }
 
     fun clearError() {

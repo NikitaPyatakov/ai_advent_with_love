@@ -6,8 +6,15 @@ An Android chat application that lets you have conversations with Claude (Anthro
 
 - Real-time chat with Claude AI (claude-sonnet-4-6)
 - Full conversation history sent with each message so Claude has context
+- **Settings dialog** — configure how Claude responds:
+  - **Answer format** — describe the desired response style (e.g. "Always respond in valid JSON format", "Use bullet points")
+  - **Max answer length** — control response length via token limit (default: 1024)
+  - **Stop condition** — provide a stop sequence; Claude stops generating as soon as it outputs that string
+- Settings are **persisted across app restarts** (saved to SharedPreferences)
+- **Clear chat** button — wipes the entire conversation history with a confirmation dialog
 - Error dialog with detailed API error messages
 - Loading indicator while waiting for a response
+- Increased network timeouts (read: 120s) to handle long responses without errors
 
 ## Tech Stack
 
@@ -15,6 +22,7 @@ An Android chat application that lets you have conversations with Claude (Anthro
 - **Architecture:** MVVM (ViewModel + LiveData)
 - **Networking:** Retrofit + OkHttp
 - **UI:** ViewBinding, RecyclerView
+- **Persistence:** SharedPreferences
 
 ## Setup
 

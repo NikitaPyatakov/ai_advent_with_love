@@ -13,7 +13,9 @@ data class ClaudeMessageRequest(
 data class ClaudeRequest(
     val model: String,
     val max_tokens: Int,
-    val messages: List<ClaudeMessageRequest>
+    val messages: List<ClaudeMessageRequest>,
+    val system: String? = null,
+    val stop_sequences: List<String>? = null
 )
 
 data class ContentBlock(

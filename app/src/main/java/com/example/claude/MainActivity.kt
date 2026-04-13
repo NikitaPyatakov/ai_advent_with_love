@@ -1,5 +1,6 @@
 package com.example.claude
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -10,9 +11,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.claude.adapter.MessageAdapter
 import com.example.claude.databinding.ActivityMainBinding
+import com.example.claude.model.ChatSettings
 import com.example.claude.viewmodel.ChatViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ChatViewModel by viewModels()
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupSendButton()
         observeViewModel()
+        viewModel.updateSettings(loadSettings())
     }
 
     private fun setupRecyclerView() {
@@ -52,6 +55,43 @@ class MainActivity : AppCompatActivity() {
                 binding.etMessage.setText("")
             }
         }
+        binding.btnSettings.setOnClickListener {
+            val dialog = SettingsDialog()
+            dialog.setCurrentSettings(viewModel.settings.value ?: ChatSettings())
+            dialog.show(supportFragmentManager, "settings")
+        }
+
+        binding.btnClearChat.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Очистить чат")
+                .setMessage("Удалить всю историю переписки?")
+                .setPositiveButton("Удалить") { _, _ -> viewModel.clearChat() }
+                .setNegativeButton("Отмена", null)
+                .show()
+        }
+    }
+
+    override fun onSettingsSaved(settings: ChatSettings) {
+        viewModel.updateSettings(settings)
+        saveSettings(settings)
+    }
+
+    private fun loadSettings(): ChatSettings {
+        val prefs = getSharedPreferences("claude_settings", Context.MODE_PRIVATE)
+        return ChatSettings(
+            answerFormat = prefs.getString("answer_format", "") ?: "",
+            maxTokens = prefs.getInt("max_tokens", 1024),
+            stopSequence = prefs.getString("stop_sequence", "") ?: ""
+        )
+    }
+
+    private fun saveSettings(settings: ChatSettings) {
+        getSharedPreferences("claude_settings", Context.MODE_PRIVATE)
+            .edit()
+            .putString("answer_format", settings.answerFormat)
+            .putInt("max_tokens", settings.maxTokens)
+            .putString("stop_sequence", settings.stopSequence)
+            .apply()
     }
 
     private fun observeViewModel() {
@@ -70,9 +110,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.error.observe(this) { error ->
             error?.let {
                 androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle("Error")
+                    .setTitle("Ошибка")
                     .setMessage(it)
-                    .setPositiveButton("OK") { dialog, _ ->
+                    .setPositiveButton("ОК") { dialog, _ ->
                         dialog.dismiss()
                         viewModel.clearError()
                     }

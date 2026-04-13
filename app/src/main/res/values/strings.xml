@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">Claude Chat</string>
-    <string name="hint_message">Type a message…</string>
-    <string name="send">Send</string>
+    <string name="hint_message">Введите сообщение…</string>
+    <string name="send">Отправить</string>
+    <string name="clear_chat">Очистить чат</string>
+    <string name="settings">Настройки</string>
+    <string name="settings_title">Настройки ответа</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_cancel">Отмена</string>
+    <string name="settings_format_label">Формат ответа</string>
+    <string name="settings_format_hint">Напишите полную инструкцию, например: Всегда отвечай в формате JSON. / Используй маркированные списки. / Отвечай только на русском языке.</string>
+    <string name="settings_length_label">Макс. длина ответа (токены)</string>
+    <string name="settings_length_hint">По умолчанию: 1024</string>
+    <string name="settings_stop_label">Условие остановки</string>
+    <string name="settings_stop_hint">Например: [КОНЕЦ] — остановить ответ при появлении этого текста</string>
 </resources>

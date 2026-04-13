@@ -14,4 +14,5 @@
     <color name="bg_input">#FFFFFFFF</color>
     <color name="input_border">#FFDDDDDD</color>
     <color name="text_primary">#FF1A1A1A</color>
+    <color name="toolbar_bg">#FF4A90D9</color>
 </resources>
