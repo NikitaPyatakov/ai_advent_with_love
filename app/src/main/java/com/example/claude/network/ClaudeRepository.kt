@@ -40,7 +40,8 @@ class ClaudeRepository {
                 max_tokens = settings.maxTokens,
                 messages = history,
                 system = settings.answerFormat.takeIf { it.isNotBlank() },
-                stop_sequences = settings.stopSequence.takeIf { it.isNotBlank() }?.let { listOf(it) }
+                stop_sequences = settings.stopSequence.takeIf { it.isNotBlank() }?.let { listOf(it) },
+                temperature = settings.temperature
             )
             val response = service.sendMessage(apiKey, request)
             val text = response.content.firstOrNull { it.type == "text" }?.text

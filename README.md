@@ -10,11 +10,13 @@ An Android chat application that lets you have conversations with Claude (Anthro
   - **Answer format** — describe the desired response style (e.g. "Always respond in valid JSON format", "Use bullet points")
   - **Max answer length** — control response length via token limit (default: 1024)
   - **Stop condition** — provide a stop sequence; Claude stops generating as soon as it outputs that string
+  - **Temperature** — controls response randomness (0.0 = deterministic, 1.0 = creative)
 - Settings are **persisted across app restarts** (saved to SharedPreferences)
 - **Clear chat** button — wipes the entire conversation history with a confirmation dialog
 - Error dialog with detailed API error messages
 - Loading indicator while waiting for a response
 - Increased network timeouts (read: 120s) to handle long responses without errors
+- Auto-scroll to the latest message after each response
 
 ## Tech Stack
 

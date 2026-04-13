@@ -56,9 +56,8 @@ class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
             }
         }
         binding.btnSettings.setOnClickListener {
-            val dialog = SettingsDialog()
-            dialog.setCurrentSettings(viewModel.settings.value ?: ChatSettings())
-            dialog.show(supportFragmentManager, "settings")
+            SettingsDialog.newInstance(viewModel.settings.value ?: ChatSettings())
+                .show(supportFragmentManager, "settings")
         }
 
         binding.btnClearChat.setOnClickListener {
@@ -81,7 +80,8 @@ class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
         return ChatSettings(
             answerFormat = prefs.getString("answer_format", "") ?: "",
             maxTokens = prefs.getInt("max_tokens", 1024),
-            stopSequence = prefs.getString("stop_sequence", "") ?: ""
+            stopSequence = prefs.getString("stop_sequence", "") ?: "",
+            temperature = prefs.getFloat("temperature", 1.0f)
         )
     }
 
@@ -91,14 +91,16 @@ class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
             .putString("answer_format", settings.answerFormat)
             .putInt("max_tokens", settings.maxTokens)
             .putString("stop_sequence", settings.stopSequence)
+            .putFloat("temperature", settings.temperature)
             .apply()
     }
 
     private fun observeViewModel() {
         viewModel.messages.observe(this) { messages ->
-            adapter.submitList(messages.toList())
-            if (messages.isNotEmpty()) {
-                binding.rvMessages.scrollToPosition(messages.size - 1)
+            adapter.submitList(messages.toList()) {
+                if (messages.isNotEmpty()) {
+                    binding.rvMessages.scrollToPosition(messages.size - 1)
+                }
             }
         }
 

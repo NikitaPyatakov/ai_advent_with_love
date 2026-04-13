@@ -71,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input_field"
             android:hint="@string/settings_stop_hint"
             android:inputType="text"
@@ -79,6 +80,29 @@
             android:paddingEnd="12dp"
             android:paddingBottom="10dp"
             android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvTemperatureLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <SeekBar
+            android:id="@+id/seekBarTemperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="10" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/settings_temperature_hint"
+            android:textColor="#FF888888"
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>

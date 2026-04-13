@@ -13,4 +13,6 @@
     <string name="settings_length_hint">По умолчанию: 1024</string>
     <string name="settings_stop_label">Условие остановки</string>
     <string name="settings_stop_hint">Например: [КОНЕЦ] — остановить ответ при появлении этого текста</string>
+    <string name="settings_temperature_label">Температура: %1$.1f</string>
+    <string name="settings_temperature_hint">0 — точно и предсказуемо, 1 — творчески и разнообразно</string>
 </resources>
