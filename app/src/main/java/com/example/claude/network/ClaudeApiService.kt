@@ -24,8 +24,20 @@ data class ContentBlock(
     val text: String?
 )
 
+data class UsageInfo(
+    val input_tokens: Int,
+    val output_tokens: Int
+)
+
 data class ClaudeResponse(
-    val content: List<ContentBlock>
+    val content: List<ContentBlock>,
+    val usage: UsageInfo?
+)
+
+data class MessageResult(
+    val text: String,
+    val inputTokens: Int,
+    val outputTokens: Int
 )
 
 interface ClaudeApiService {

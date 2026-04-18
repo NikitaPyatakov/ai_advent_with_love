@@ -15,4 +15,5 @@
     <string name="settings_stop_hint">Например: [КОНЕЦ] — остановить ответ при появлении этого текста</string>
     <string name="settings_temperature_label">Температура: %1$.1f</string>
     <string name="settings_temperature_hint">0 — точно и предсказуемо, 1 — творчески и разнообразно</string>
+    <string name="settings_model_label">Модель</string>
 </resources>

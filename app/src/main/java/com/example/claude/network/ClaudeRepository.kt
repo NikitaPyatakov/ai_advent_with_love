@@ -33,10 +33,10 @@ class ClaudeRepository {
             .create(ClaudeApiService::class.java)
     }
 
-    suspend fun sendMessage(history: List<ClaudeMessageRequest>, settings: ChatSettings = ChatSettings()): Result<String> {
+    suspend fun sendMessage(history: List<ClaudeMessageRequest>, settings: ChatSettings = ChatSettings()): Result<MessageResult> {
         return try {
             val request = ClaudeRequest(
-                model = "claude-sonnet-4-6",
+                model = settings.model,
                 max_tokens = settings.maxTokens,
                 messages = history,
                 system = settings.answerFormat.takeIf { it.isNotBlank() },
@@ -44,9 +44,10 @@ class ClaudeRepository {
                 temperature = settings.temperature
             )
             val response = service.sendMessage(apiKey, request)
-            val text = response.content.firstOrNull { it.type == "text" }?.text
-                ?: "No response"
-            Result.success(text)
+            val text = response.content.firstOrNull { it.type == "text" }?.text ?: "No response"
+            val inputTokens = response.usage?.input_tokens ?: 0
+            val outputTokens = response.usage?.output_tokens ?: 0
+            Result.success(MessageResult(text, inputTokens, outputTokens))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
             val apiMessage = errorBody?.let {

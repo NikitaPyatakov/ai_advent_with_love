@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
     private fun loadSettings(): ChatSettings {
         val prefs = getSharedPreferences("claude_settings", Context.MODE_PRIVATE)
         return ChatSettings(
+            model = prefs.getString("model", "claude-sonnet-4-6") ?: "claude-sonnet-4-6",
             answerFormat = prefs.getString("answer_format", "") ?: "",
             maxTokens = prefs.getInt("max_tokens", 1024),
             stopSequence = prefs.getString("stop_sequence", "") ?: "",
@@ -88,6 +89,7 @@ class MainActivity : AppCompatActivity(), SettingsDialog.Listener {
     private fun saveSettings(settings: ChatSettings) {
         getSharedPreferences("claude_settings", Context.MODE_PRIVATE)
             .edit()
+            .putString("model", settings.model)
             .putString("answer_format", settings.answerFormat)
             .putInt("max_tokens", settings.maxTokens)
             .putString("stop_sequence", settings.stopSequence)

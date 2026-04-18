@@ -35,18 +35,33 @@ class ChatViewModel : ViewModel() {
     fun sendMessage(text: String) {
         if (text.isBlank() || _isLoading.value == true) return
 
-        val userMessage = Message(text.trim(), isUser = true)
+        val trimmed = text.trim()
+        val estimatedTokens = (trimmed.length / 4).coerceAtLeast(1)
+        val userMessage = Message(trimmed, isUser = true, inputTokens = estimatedTokens)
         addMessage(userMessage)
-        conversationHistory.add(ClaudeMessageRequest(role = "user", content = text.trim()))
+        conversationHistory.add(ClaudeMessageRequest(role = "user", content = trimmed))
 
         _isLoading.value = true
         _error.value = null
 
+        val currentSettings = _settings.value ?: ChatSettings()
+
         viewModelScope.launch {
-            val result = repository.sendMessage(conversationHistory.toList(), _settings.value ?: ChatSettings())
-            result.onSuccess { responseText ->
-                conversationHistory.add(ClaudeMessageRequest(role = "assistant", content = responseText))
-                addMessage(Message(responseText, isUser = false))
+            val startTime = System.currentTimeMillis()
+            val result = repository.sendMessage(conversationHistory.toList(), currentSettings)
+            val responseTimeMs = System.currentTimeMillis() - startTime
+            result.onSuccess { msgResult ->
+                conversationHistory.add(ClaudeMessageRequest(role = "assistant", content = msgResult.text))
+                addMessage(
+                    Message(
+                        content = msgResult.text,
+                        isUser = false,
+                        inputTokens = msgResult.inputTokens,
+                        outputTokens = msgResult.outputTokens,
+                        model = currentSettings.model,
+                        responseTimeMs = responseTimeMs
+                    )
+                )
             }.onFailure { throwable ->
                 _error.value = throwable.message ?: "Unknown error"
             }
